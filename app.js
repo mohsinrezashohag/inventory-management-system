@@ -11,17 +11,17 @@ app.use(express.json());
 
 
 
-app.get('/', (req, res) => {
-    res.send('Route is Working')
-})
+// app.get('/', (req, res) => {
+//     res.send('Route is Working')
+// })
 
 
 
 
 
-
-app.post('/api/v1/product', createProduct)
-app.get('/api/v1/product', getProducts)
+// importing product routers
+const productRoutes = require('./routes/product.route')
+app.use('/api/v1/product', productRoutes)
 
 
 
