@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const { default: mongoose, mongo } = require('mongoose');
-const { getProducts, createProduct } = require('./controllers/Product.controller');
 
 // middleware
 app.use(cors());
