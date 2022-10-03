@@ -1,3 +1,4 @@
+const { query } = require("express");
 const Product = require("../models/Product");
 const { getProductService, createProductService, updateProductService, bulkUpdateProductsService, deleteProductService, bulkDeleteProductsService, } = require("../services/product.services")
 
@@ -9,7 +10,7 @@ exports.getProducts = async (req, res, next) => {
         excludeField.forEach(field => delete queryObject[field])
 
         console.log('original Object', req.query);
-        console.log('original Object', queryObject);
+        console.log('customized Object', queryObject);
 
 
         //sorting at the same times
@@ -25,9 +26,40 @@ exports.getProducts = async (req, res, next) => {
             excludeFields.fields = fieldsText;
         }
 
+        // get >, <, >=, <= value dynamically
+        let stringObject = JSON.stringify(queryObject);
+        const filterString = stringObject.replace(/\b(gt|gte|lt|lte)\b/g, logic => `$${logic}`);
+        const condition = JSON.parse(filterString)
+        console.log("condition line :", condition);
 
 
-        const products = await getProductService(queryObject, sortedFilter, excludeFields);
+
+        // page & limit related problems
+        // 40 products (limit-10)
+        //1-10-------->page-1
+        //11-20-------->page-2
+        //21-30-------->page-3 (page-1)
+        //31-40-------->page-4
+
+        const pageQueries = {}
+        if (req.query.page) {
+            const { page = 1, limit = 10 } = req.query;
+            const skip = (page - 1) * Number(limit);
+            pageQueries.skip = skip;
+            pageQueries.limit = Number(limit);
+        }
+
+
+
+
+
+
+        //queryObject, sortedFilter, excludeFields, condition,
+        const products = await getProductService(pageQueries);
+
+
+
+
         res.status(200).json({
             status: "success",
             message: "Product found successfully",
