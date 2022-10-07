@@ -1,4 +1,5 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Schema.Types;
 
 // schema design 
 const productSchema = new mongoose.Schema({
@@ -15,46 +16,75 @@ const productSchema = new mongoose.Schema({
         required: true,
     },
 
-    price: {
-        type: Number,
-        required: true,
-        min: [0, "minimum product price is 0"]
-    },
-
-    // unit: {
-    //     type: String,
+    // price: {
+    //     type: Number,
     //     required: true,
-    //     enum: {
-    //         values: ["kg", "litre", "pcs"],
-    //         message: "cant unite {values} it should be kg/pcs/litre"
-    //     }
+    //     min: [0, "minimum product price is 0"]
     // },
 
-    quantity: {
-        type: Number,
-        required: true,
-        min: [0, "minimum product quantity 0"],
-        validate: {
-            validator: (value) => {
-                const isInteger = Number.isInteger(value);
-                if (isInteger) {
-                    return true;
-                } else {
-                    return false;
-                }
-            },
-            message: "quantity must be an integer"
-        }
-    },
-
-    status: {
+    unit: {
         type: String,
         required: true,
         enum: {
-            values: ["in-stock", "out-of-stock", "on-process"],
-            message: "status must be in stock/out-of-stock/on-process"
+            values: ["kg", "litre", "pcs", "bag"],
+            message: "cant unite {values} it should be kg/pcs/litre"
         }
     },
+    imageURL: {
+        type: String,
+        validators: (values) => {
+            if (!Array.isArray(values)) {
+                return false;
+            }
+            let isValid = false;
+            values.forEach(url => {
+                if (!validator.isUrl(url)) {
+                    isValid = false;
+                }
+            });
+            return isValid;
+        }
+    },
+    category: {
+        type: String,
+        required: true,
+    },
+    brand: {
+        name: {
+            type: String,
+            required: true,
+        },
+        id: {
+            type: ObjectId,
+            ref: 'Brand'
+        }
+    }
+
+    // quantity: {
+    //     type: Number,
+    //     required: true,
+    //     min: [0, "minimum product quantity 0"],
+    //     validate: {
+    //         validator: (value) => {
+    //             const isInteger = Number.isInteger(value);
+    //             if (isInteger) {
+    //                 return true;
+    //             } else {
+    //                 return false;
+    //             }
+    //         },
+    //         message: "quantity must be an integer"
+    //     }
+    // },
+
+    // status: {
+    //     type: String,
+    //     required: true,
+    //     enum: {
+    //         values: ["in-stock", "out-of-stock", "on-process"],
+    //         message: "status must be in stock/out-of-stock/on-process"
+    //     }
+    // },
 
 
     // supplier: {
@@ -63,12 +93,12 @@ const productSchema = new mongoose.Schema({
     // },
 
     // categories: [{
-    //     name: {
-    //         type: String,
-    //         required: true,
-    //     },
-    //     _id: mongoose.Schema.Types.ObjectId
-    // }]
+    //         name: {
+    //             type: String,
+    //             required: true,
+    //         },
+    //         _id: mongoose.Schema.Types.ObjectId
+    //     }]
 
 
 

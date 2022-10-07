@@ -28,7 +28,6 @@ exports.getProductService = async (pageQueries) => {
 
 exports.createProductService = async (data) => {
     //const result = await Product.create(req.body);
-    //   const product = new Product(req.body);
     const product = new Product(data);
     //checking an instance
     if (product.quantity == 0) {
