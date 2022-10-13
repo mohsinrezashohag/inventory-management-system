@@ -4,7 +4,7 @@ const { ObjectId } = mongoose.Schema.Types;
 
 const storeSchema = new mongoose.Schema({
     name: {
-        type: string,
+        type: String,
         trim: true,
         minLength: 5,
         required: [true, 'store must need to have a name'],
@@ -14,17 +14,19 @@ const storeSchema = new mongoose.Schema({
         }
     },
     description: {
-        type: 'string',
+        type: String,
     },
     status: {
+        type: String,
         enum: {
             values: ['active', 'inactive'],
             default: 'active'
+
         }
     },
     manager: {
-        name: string,
-        type: string,
+        name: String,
+        type: String,
         id: {
             type: ObjectId,
             ref: "User"
@@ -35,3 +37,4 @@ const storeSchema = new mongoose.Schema({
 })
 
 const Store = mongoose.model('Store', storeSchema)
+module.exports = Store

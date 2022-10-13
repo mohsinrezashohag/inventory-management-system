@@ -15,13 +15,11 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-
     // price: {
     //     type: Number,
     //     required: true,
     //     min: [0, "minimum product price is 0"]
     // },
-
     unit: {
         type: String,
         required: true,
@@ -59,7 +57,6 @@ const productSchema = new mongoose.Schema({
             ref: 'Brand'
         }
     }
-
     // quantity: {
     //     type: Number,
     //     required: true,

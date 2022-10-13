@@ -3,13 +3,11 @@ const { ObjectId } = mongoose.Schema.Types;
 
 
 const stockSchema = new mongoose.Schema({
-
     productId: {
         type: ObjectId,
         required: true,
         ref: "Product"
     },
-
     name: {
         type: String,
         required: true,
@@ -22,13 +20,11 @@ const stockSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-
     price: {
         type: Number,
         required: true,
         min: [0, "minimum product price is 0"]
     },
-
     quantity: {
         type: Number,
         required: true,

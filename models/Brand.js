@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
+// const validator = require('validator');
 const { ObjectId } = mongoose.Schema.Types;
+const { isEmail, isURL } = require('validator')
 
 const brandSchema = new mongoose.Schema({
     //name
@@ -11,7 +12,7 @@ const brandSchema = new mongoose.Schema({
     //Supplier
     //status
     name: {
-        type: 'string',
+        type: String,
         trim: true,
         required: [true, "Please provide a brand name"],
         lowercase: true,
@@ -19,19 +20,20 @@ const brandSchema = new mongoose.Schema({
         unique: true
     },
     description: {
-        type: 'string',
+        type: String,
         required: [true, "Please provide a description"],
-        minLength: 100
+        minLength: 20
     },
+    location: String,
     email: {
-        type: 'string',
+        type: String,
         lowercase: true,
-        validate: [validator.isEmail, "provide a valid email address"]
+        validate: [isEmail, "provide a valid email address"]
     },
     website: {
-        type: 'string',
+        type: String,
         lowercase: true,
-        validate: [validator.isUrl, "provide a valid website link"]
+        validate: [isURL, "provide a valid website link"]
     },
     product: [
         {
@@ -40,8 +42,8 @@ const brandSchema = new mongoose.Schema({
         }
     ],
     suppliers: [{
-        name: string,
-        contactNumber: string,
+        name: String,
+        contactNumber: String,
         id: {
             type: ObjectId,
             ref: 'Supplier'
@@ -49,7 +51,7 @@ const brandSchema = new mongoose.Schema({
 
     }],
     status: {
-        type: string,
+        type: String,
         enum: ['active', 'inactive'],
         default: 'active'
     }
@@ -59,4 +61,4 @@ const brandSchema = new mongoose.Schema({
 
 const Brand = mongoose.model('Brand', brandSchema)
 
-exports = Brand;
+module.exports = Brand;

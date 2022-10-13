@@ -1,5 +1,5 @@
-const { getProducts } = require('../controllers/Product.controller');
 const Product = require('../models/Product')
+const Brand = require('../models/Brand')
 
 
 //query, sortedFilter, excludeFields,condition
@@ -27,15 +27,22 @@ exports.getProductService = async (pageQueries) => {
 
 
 exports.createProductService = async (data) => {
-    //const result = await Product.create(req.body);
-    const product = new Product(data);
+    const product = await Product.create(data);
+    // const product = new Product(data);
+    // const result = await product.save();
+
+    // step-1 => brand Id
+    // step-2 => update brand(push product id to the brand based on brand id)
+    const { _id: productId, brand } = product;
+    const updatingBrand = await Brand.updateOne({ _id: brand.id }, { $push: { product: productId } })
+    console.log(updatingBrand.nModified);
     //checking an instance
     if (product.quantity == 0) {
         product.status = "out-of-stock"
     }
-    const result = await product.save();
 
-    return result;
+
+    return product;
 }
 
 exports.updateProductService = async (productId, data) => {
