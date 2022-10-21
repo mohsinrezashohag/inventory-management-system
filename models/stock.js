@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Schema.Types;
+const { isURL } = require('validator')
 
 
 const stockSchema = new mongoose.Schema({
@@ -42,18 +43,19 @@ const stockSchema = new mongoose.Schema({
 
     imageURL: {
         type: String,
-        validators: (values) => {
-            if (!Array.isArray(values)) {
-                return false;
-            }
-            let isValid = false;
-            values.forEach(url => {
-                if (!validator.isUrl(url)) {
-                    isValid = false;
-                }
-            });
-            return isValid;
-        }
+        validate: [isURL, 'must be a valid image URL']
+        // validators: (values) => {
+        //     if (!Array.isArray(values)) {
+        //         return false;
+        //     }
+        //     let isValid = false;
+        //     values.forEach(url => {
+        //         if (!validator.isUrl(url)) {
+        //             isValid = false;
+        //         }
+        //     });
+        //     return isValid;
+        // }
     },
     category: {
         type: String,
@@ -71,7 +73,7 @@ const stockSchema = new mongoose.Schema({
     },
     store: {
         name: String,
-        required: true,
+        // required: true,
         id: {
             type: ObjectId,
             ref: "Store"
@@ -86,17 +88,23 @@ const stockSchema = new mongoose.Schema({
     },
     suppliedBy: {
         name: String,
-        required: true,
+        // required: true,
         id: {
             type: ObjectId,
             ref: 'Supplier'
         }
+    },
+    sellCount: {
+        type: Number,
+        min: 0,
+        default: 0
     }
 
 
-}, {
-    timestamps: true,
-})
+},
+    {
+        timestamps: true,
+    })
 
 const Stock = mongoose.model('Stock', stockSchema)
 module.exports = Stock;

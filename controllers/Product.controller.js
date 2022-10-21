@@ -172,3 +172,12 @@ exports.bulkDeleteProduct = async (req, res, next) => {
         })
     }
 }
+
+
+exports.fileUpload = async (req, res, next) => {
+    try {
+        res.status(200).json(req.file)//for multiple image (just req.files)
+    } catch (error) {
+
+    }
+}
