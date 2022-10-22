@@ -1,4 +1,6 @@
-const { signupUserService, loginUserService } = require("../services/user.services")
+const { signupUserService, loginUserService, findUserByEmailService } = require("../services/user.services");
+const { generateToken } = require("../utils/token");
+
 
 exports.signupUser = async (req, res, next) => {
     try {
@@ -58,18 +60,25 @@ exports.loginUser = async (req, res, next) => {
             })
         }
 
-        if (user.status != 'active') {
-            return res.status(401).json({
-                status: 'account not active',
-                message: "user account is not activated yet"
-            })
-        }
+        // if (user.status != 'active') {
+        //     return res.status(401).json({
+        //         status: 'account not active',
+        //         message: "user account is not activated yet"
+        //     })
+        // }
 
+        const token = generateToken(user);
+
+
+        const { password: pwd, ...userData } = user.toObject();
 
         res.status(200).json({
             status: "success",
             message: "user login successfully",
-            data: user
+            data: {
+                userData,
+                token
+            }
         })
 
     } catch (error) {
@@ -78,7 +87,21 @@ exports.loginUser = async (req, res, next) => {
             message: "user login failed",
         })
     }
+}
 
-
-
+//user persistance
+exports.getMe = async (req, res, next) => {
+    try {
+        const user = await findUserByEmailService(req?.user?.email);
+        console.log(user);
+        res.status(401).json({
+            status: "successful",
+            data: user
+        })
+    } catch (error) {
+        res.status(401).json({
+            status: 'failed',
+            message: "you are not a logged in user"
+        })
+    }
 }
