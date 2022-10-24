@@ -1,4 +1,5 @@
 const { signupUserService, loginUserService, findUserByEmailService } = require("../services/user.services");
+const { sendMailWithGmail } = require("../utils/mail");
 const { generateToken } = require("../utils/token");
 
 
@@ -6,6 +7,17 @@ exports.signupUser = async (req, res, next) => {
     try {
         const userInfo = req.body;
         const user = await signupUserService(userInfo);
+
+
+        // account verifying & mail sending
+        /*  const mailData = {
+              to: [user.email],
+              subject: "verify account",
+              text: "tank you"
+          };
+       sendMailWithGmail(mailData);
+       */
+
         res.status(200).json({
             status: 'success',
             message: 'user created successfully',
@@ -69,8 +81,10 @@ exports.loginUser = async (req, res, next) => {
 
         const token = generateToken(user);
 
-
         const { password: pwd, ...userData } = user.toObject();
+
+
+
 
         res.status(200).json({
             status: "success",
