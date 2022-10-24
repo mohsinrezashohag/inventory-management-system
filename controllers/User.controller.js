@@ -8,7 +8,6 @@ exports.signupUser = async (req, res, next) => {
         const userInfo = req.body;
         const user = await signupUserService(userInfo);
 
-
         // account verifying & mail sending
         /*  const mailData = {
               to: [user.email],
@@ -17,12 +16,12 @@ exports.signupUser = async (req, res, next) => {
           };
        sendMailWithGmail(mailData);
        */
-
         res.status(200).json({
             status: 'success',
             message: 'user created successfully',
             data: user
         })
+
     } catch (error) {
         res.status(400).json({
             status: 'failed',
@@ -30,6 +29,7 @@ exports.signupUser = async (req, res, next) => {
         })
     }
 }
+
 /*
 1.check email password are given
 2.load user with email
@@ -53,9 +53,9 @@ exports.loginUser = async (req, res, next) => {
         }
         const user = await loginUserService(email);
 
-
+        //comparing password with Schema methods
         const isPasswordMatched = user.comparePassword(password, user.password);
-        console.log(isPasswordMatched);
+
         if (!isPasswordMatched) {
             return res.status(401).json({
                 status: 'failed',
@@ -72,18 +72,16 @@ exports.loginUser = async (req, res, next) => {
             })
         }
 
-        // if (user.status != 'active') {
-        //     return res.status(401).json({
-        //         status: 'account not active',
-        //         message: "user account is not activated yet"
-        //     })
-        // }
+        if (user.status != 'active') {
+            return res.status(401).json({
+                status: 'account not active',
+                message: "user account is not activated yet"
+            })
+        }
 
+        // generating token with jwt (utils.token) file
         const token = generateToken(user);
-
         const { password: pwd, ...userData } = user.toObject();
-
-
 
 
         res.status(200).json({
@@ -108,7 +106,7 @@ exports.getMe = async (req, res, next) => {
     try {
         const user = await findUserByEmailService(req?.user?.email);
         console.log(user);
-        res.status(401).json({
+        res.status(200).json({
             status: "successful",
             data: user
         })
