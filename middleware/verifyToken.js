@@ -17,6 +17,7 @@ module.exports = async (req, res, next) => {
                 message: "You are not a logged in user"
             })
         }
+        
         const decoded = await promisify(jwt.verify)(token, process.env.cryptoToken)
         req.user = decoded;
         next();

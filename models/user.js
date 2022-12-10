@@ -96,7 +96,6 @@ userSchema.pre("save", function (next) {
 // using a method comparing password during login
 userSchema.methods.comparePassword = function (password, hashedPassword) {
     if (password === hashedPassword) {
-        console.log("true");
         return true;
     }
 }
